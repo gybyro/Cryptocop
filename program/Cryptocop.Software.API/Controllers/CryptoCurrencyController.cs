@@ -6,5 +6,12 @@ namespace Cryptocop.Software.API.Controllers;
 [Route("api/cryptocurrencies")]
 public class CryptoCurrencyController : ControllerBase
 {
-    // TODO: Setup routes
+    // GET /api/cryptocurrencies
+
+    // Gets all available cryptocurrencies:
+    // BitCoin (BTC)
+    // Ethereum (ETH)
+    // Tether (USDT)
+    // Chainlink (LINK)
+
 }
