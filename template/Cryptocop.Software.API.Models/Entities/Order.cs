@@ -16,8 +16,8 @@ public class Order
     // (code-generated)
     public string MaskedCreditCard { get; set; } = null!;
     public DateTime OrderDate { get; set; } = DateTime.UtcNow;
-    public decimal TotalPrice { get; set; }
+    public float TotalPrice { get; set; }
 
     // Foreign keys
-    public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();  // (many-to-one)
+    public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();  // (many-to-one)
 }
