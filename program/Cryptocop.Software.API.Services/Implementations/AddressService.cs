@@ -16,9 +16,10 @@ public class AddressService : IAddressService
         throw new NotImplementedException();
     }
 
+    // Get All
     public Task<IEnumerable<AddressDto>> GetAllAddressesAsync(string email)
     {
-        throw new NotImplementedException();
+        return _repo.GetAllAddressesAsync(email);
     }
 
     public Task DeleteAddressAsync(string email, int addressId)

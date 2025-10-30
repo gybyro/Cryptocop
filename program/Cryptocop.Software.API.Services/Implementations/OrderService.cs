@@ -8,16 +8,16 @@ namespace Cryptocop.Software.API.Services.Implementations;
 public class OrderService : IOrderService
 {
     private readonly IOrderRepository _repo;
-    public OrderService(IOrderRepository repo) => _repo = repo;
+    public OrderService(IOrderRepository repo) { _repo = repo; }
 
 
     public Task<IEnumerable<OrderDto>> GetOrdersAsync(string email)
     {
-        throw new NotImplementedException();
+        return _repo.GetOrdersAsync(email);
     }
 
     public Task CreateNewOrderAsync(string email, OrderInputModel order)
     {
-        throw new NotImplementedException();
+        return _repo.CreateNewOrderAsync(email, order);
     }
 }

@@ -4,7 +4,9 @@ public class PaymentCardHelper
 {
     public static string MaskPaymentCard(string paymentCardNumber)
     {
-        // TODO: Implement
-        return "";
+        var mask = new string('*', paymentCardNumber.Length - 4);
+        var pan = paymentCardNumber.Substring(paymentCardNumber.Length - 4, paymentCardNumber.Length);
+
+        return $"{mask}{pan}";
     }
 }

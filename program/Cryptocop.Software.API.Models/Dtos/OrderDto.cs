@@ -17,6 +17,7 @@ public class OrderDto
     public ICollection<OrderItemDto> OrderItems { get; set; } = new List<OrderItemDto>();  // (many-to-one)
 }
 
+// OrderItemDto is the same as ShoppingCartItemDto but the assignment description lists them separately...
 public class OrderItemDto
 {
     public int Id { get; set; }

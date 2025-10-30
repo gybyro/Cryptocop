@@ -1,11 +1,17 @@
 ﻿using Cryptocop.Software.API.Models.Dtos;
 using Cryptocop.Software.API.Models.InputModels;
 using Cryptocop.Software.API.Repositories.Interfaces;
+using Cryptocop.Software.API.Repositories.Data;
+
 
 namespace Cryptocop.Software.API.Repositories.Implementations;
 
 public class ShoppingCartRepository : IShoppingCartRepository
 {
+    private readonly CryptocopDbContext _context;
+    public ShoppingCartRepository(CryptocopDbContext context) => _context = context;
+
+
     public Task<IEnumerable<ShoppingCartItemDto>> GetCartItemsAsync(string email)
     {
         throw new NotImplementedException();

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-
 using Cryptocop.Software.API.Models.Entities;
 
 namespace Cryptocop.Software.API.Repositories.Data;
@@ -19,24 +18,42 @@ public class CryptocopDbContext : DbContext
 
 
     // relationships established on db creation:
-    // protected override void OnModelCreating(ModelBuilder modelBuilder)
-    // {
-    //     base.OnModelCreating(modelBuilder);
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        // ShoppingCart -> ShoppingCartItem
+        modelBuilder.Entity<ShoppingCartItem>()
+        .HasOne<ShoppingCart>()
+        .WithMany()
+        .HasForeignKey(a => a.ShoppingCartId);
 
 
-    //     // ShoppingCart -> ShoppingCartItem
-    //     modelBuilder.Entity<ShoppingCart>()
-    //         .HasMany(a => a.ShoppingCartItems)
-    //         .WithOne(s => s.ShoppingCart)
-    //         .HasForeignKey(s => s.AlbumId)
-    //         .OnDelete(DeleteBehavior.Cascade);
-        
-    //     // Order -> OrderItem
-    //     // User -> ShoppingCart
-    //     // User -> Order
-    //     // User -> Address
-    //     // User -> PaymentCard
+        // Order -> OrderItem
+        modelBuilder.Entity<OrderItem>()
+        .HasOne<Order>()
+        .WithMany()
+        .HasForeignKey(a => a.OrderId);
 
-    // }
-    
+
+        // User -> ShoppingCart
+        modelBuilder.Entity<ShoppingCart>()
+        .HasOne<User>()
+        .WithMany()
+        .HasForeignKey(a => a.UserId);
+
+
+        // User -> Address
+        modelBuilder.Entity<Address>()
+        .HasOne<User>()
+        .WithMany()
+        .HasForeignKey(a => a.UserId);
+
+
+        // User -> PaymentCard
+        modelBuilder.Entity<PaymentCard>()
+        .HasOne<User>()
+        .WithMany()
+        .HasForeignKey(a => a.UserId);
+    }
 }
