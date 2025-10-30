@@ -1,0 +1,10 @@
+namespace Cryptocop.Software.API.Models.Entities;
+
+public class ShoppingCart
+{
+    public int Id { get; set; }
+    public int UserId { get; set; }
+
+    // Foreign keys
+    public ICollection<ShoppingCartItem> Items { get; set; } = new List<ShoppingCartItem>();  // (many-to-one)
+}
