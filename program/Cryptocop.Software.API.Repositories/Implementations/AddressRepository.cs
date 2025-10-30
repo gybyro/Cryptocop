@@ -1,9 +1,9 @@
-﻿using Cryptocop.Software.API.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using Cryptocop.Software.API.Models.Dtos;
 using Cryptocop.Software.API.Models.InputModels;
 using Cryptocop.Software.API.Repositories.Interfaces;
 using Cryptocop.Software.API.Repositories.Data;
-using Microsoft.EntityFrameworkCore;
+using Cryptocop.Software.API.Repositories.Helpers;
 
 namespace Cryptocop.Software.API.Repositories.Implementations;
 

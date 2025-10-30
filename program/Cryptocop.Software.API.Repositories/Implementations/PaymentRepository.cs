@@ -39,16 +39,12 @@ public class PaymentRepository : IPaymentRepository
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) throw new ArgumentException($"User with email: {email} not found");
 
-        
-
         var usersCardList = await _context.PaymentCards.Where(c => c.UserId == user.Id).ToListAsync();
-        var ret = usersCardList.Select(c => new PaymentCardDto
-        {
-            
-            
-        })
+        var ret = usersCardList.Select(c => c.ToDto());
 
+        return ret;
     }
+    
 
     // helper func, by me :P
     // public async Task<PaymentCardDto> GetPaymentCardAsync(string email, int id)
@@ -62,10 +58,3 @@ public class PaymentRepository : IPaymentRepository
     //     return card;
     // }
 }
-
-public int Id { get; set; }
-    public int UserId { get; set; }
-    public string CardholderName { get; set; } = null!;
-    public string CardNumber { get; set; } = null!;
-    public int Month { get; set; }
-    public int Year { get; set; }

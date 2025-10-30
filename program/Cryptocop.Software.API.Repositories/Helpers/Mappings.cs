@@ -1,8 +1,7 @@
 using Cryptocop.Software.API.Models.Entities;
 using Cryptocop.Software.API.Models.Dtos;
-using Cryptocop.Software.API.Repositories.Helpers;
 
-namespace Cryptocop.Software.API.Models;
+namespace Cryptocop.Software.API.Repositories.Helpers;
 
 public static class Mappings
 {
@@ -52,15 +51,20 @@ public static class Mappings
             TotalPrice = item.TotalPrice
         };
 
-    public static PaymentCardDto ToDto(this PaymentCard card) =>
-        new PaymentCardDto
+    public static PaymentCardDto ToDto(this PaymentCard card)
+    {
+        var masked = PaymentCardHelper.MaskPaymentCard(card.CardNumber);
+
+        return new PaymentCardDto
         {
             Id = card.Id,
             CardholderName = card.CardholderName,
-            CardNumber = MaskPaymentCard(card.CardNumber),
+            CardNumber = masked,
             Month = card.Month,
             Year = card.Year
         };
+    }
+        
 
     // public static ShoppingCartItemDto ToDto(this ShoppingCartItem item) =>
     //     new ShoppingCartItemDto

@@ -13,5 +13,5 @@ public class User
     public ICollection<PaymentCard> PaymentCards { get; set; } = new List<PaymentCard>();  // (many-to-one)
     public ICollection<Order> Orders { get; set; } = new List<Order>();  // (many-to-one)
     public ICollection<Address> Addresses { get; set; } = new List<Address>();  // (many-to-one)
-    public ShoppingCart ShoppingCarts { get; set; } = null!; // (one-to-one)
+    public ShoppingCart ShoppingCartt { get; set; } = null!; // (one-to-one)
 }

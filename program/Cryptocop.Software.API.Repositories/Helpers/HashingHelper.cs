@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 
 namespace Cryptocop.Software.API.Repositories.Helpers;
 
