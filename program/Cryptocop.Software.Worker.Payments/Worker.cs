@@ -26,27 +26,19 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            if (_logger.IsEnabled(LogLevel.Information)) _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-        }
-
-
-        stoppingToken.ThrowIfCancellationRequested();
         InitialiseRabbitMq();
 
         var consumer = new AsyncEventingBasicConsumer(_channel);
         consumer.Received += HandleMessageAsync;
+
         _channel!.BasicConsume(queue: _rabbitOptions.QueueName, autoAck: false, consumer: consumer);
+        _logger.LogInformation("📧 Email Worker listening for messages on {queue}", _rabbitOptions.QueueName);
 
         try
         {
             await Task.Delay(Timeout.Infinite, stoppingToken);
         }
-        catch (TaskCanceledException)
-        {
-            // Expected when the service is stopping
-        }
+        catch (TaskCanceledException) { }
     }
 
     private Task HandleMessageAsync(object sender, BasicDeliverEventArgs args)

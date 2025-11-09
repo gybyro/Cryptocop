@@ -10,7 +10,7 @@
   <ItemGroup>
     <PackageReference Include="CreditCardValidator" Version="3.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
-    <PackageReference Include="RabbitMQ.Client" Version="7.2.0" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.6.0" />
   </ItemGroup>
 
   <ItemGroup>

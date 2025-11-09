@@ -34,7 +34,9 @@ services:
       - cryptocop-network
 
   api:
-    build: ./Cryptocop.Software.API
+    build:
+      context: .
+      dockerfile: ./Cryptocop.Software.API/Dockerfile
     container_name: cryptocop_api
     depends_on:
       db:
