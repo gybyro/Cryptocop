@@ -30,11 +30,14 @@ public class PaymentRepository : IPaymentRepository
             Year = paymentCard.Year
         };
 
-        user.PaymentCards.Add(card);
-        _context.PaymentCards.Add(card);
+        // user.PaymentCards.Add(card);
+        // _context.PaymentCards.Add(card);
 
-        _context.SaveChanges();
-        return;
+        // _context.SaveChanges();
+        // return;
+        
+        await _context.PaymentCards.AddAsync(card);
+        await _context.SaveChangesAsync();
     }
 
     // Get all

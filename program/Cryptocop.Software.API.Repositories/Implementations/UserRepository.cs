@@ -28,7 +28,7 @@ public class UserRepository : IUserRepository
 
         var hashPass = HashingHelper.HashPassword(inputModel.Password);
 
-        var token = _tokenRepo.CreateNewTokenAsync();
+        var token = await _tokenRepo.CreateNewTokenAsync();
 
         var newUser = new User
         {
@@ -36,8 +36,9 @@ public class UserRepository : IUserRepository
             Email = inputModel.Email,
             HashedPassword = hashPass
         };
-        _context.Users.Add(newUser);
-        _context.SaveChanges();
+
+        await _context.Users.AddAsync(newUser);
+        await _context.SaveChangesAsync();
 
         var ret = newUser.ToDto(token.Id);
         return ret;
@@ -54,7 +55,7 @@ public class UserRepository : IUserRepository
         if (userC.HashedPassword != newHashedPass) throw new ArgumentException($"Wrong Password");
 
 
-        var token = _tokenRepo.CreateNewTokenAsync();
+        var token = await _tokenRepo.CreateNewTokenAsync();
 
         var ret = userC.ToDto(token.Id);
         return ret;

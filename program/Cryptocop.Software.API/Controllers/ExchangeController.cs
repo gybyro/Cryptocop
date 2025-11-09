@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+
 
 using Cryptocop.Software.API.Models.Dtos;
 using Cryptocop.Software.API.Services.Interfaces;
@@ -7,6 +10,7 @@ namespace Cryptocop.Software.API.Controllers;
 
 [Route("api/exchanges")]
 [ApiController]
+[Authorize]
 public class ExchangeController : ControllerBase
 {
     private readonly IExchangeService _exchangeService;

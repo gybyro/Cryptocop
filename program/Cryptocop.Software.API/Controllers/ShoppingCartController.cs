@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
+using Cryptocop.Software.API.Extensions;
 using Cryptocop.Software.API.Models.Dtos;
 using Cryptocop.Software.API.Models.InputModels;
 using Cryptocop.Software.API.Services.Interfaces;
@@ -8,6 +11,7 @@ namespace Cryptocop.Software.API.Controllers;
 
 [Route("api/cart")]
 [ApiController]
+[Authorize]
 public class ShoppingCartController : ControllerBase
 {
     private readonly IShoppingCartService _cartService;
@@ -19,24 +23,27 @@ public class ShoppingCartController : ControllerBase
     [HttpGet("")]
     public async Task<ActionResult<IEnumerable<ShoppingCartItemDto>>> GetCartItems()
     {
-        var mal = ""; // get email from somewhere else plz
+        var email = User.GetUserEmail();
+        if (email is null) return Unauthorized();
 
-        return Ok(await _cartService.GetCartItemsAsync(mal));
+        return Ok(await _cartService.GetCartItemsAsync(email));
     }
 
     // POST /api/cart 
     // Adds an item to the shopping cart
     [HttpPost("")]
-    public async Task<ActionResult<ShoppingCartItemDto>> AddPaymentCard(ShoppingCartItemInputModel input)
+    public async Task<ActionResult> AddPaymentCard(ShoppingCartItemInputModel input)
     {
-        var mal = ""; // get email from somewhere else plz
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+        var email = User.GetUserEmail();
+        if (email is null) return Unauthorized();
 
         try
         {
-            await _cartService.AddCartItemAsync(mal, input);
-            return Ok("Item added to cart");
+            await _cartService.AddCartItemAsync(email, input);
+            return Ok();
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             return BadRequest(ex.Message);
         }
@@ -47,14 +54,15 @@ public class ShoppingCartController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> RemoveCartItem(int id)
     {
-        var mal = ""; // get email from somewhere else plz
+        var email = User.GetUserEmail();
+        if (email is null) return Unauthorized();
 
         try
         {
-            await _cartService.RemoveCartItemAsync(mal, id);
+            await _cartService.RemoveCartItemAsync(email, id);
             return NoContent();
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             return BadRequest(ex.Message);
         }
@@ -63,16 +71,17 @@ public class ShoppingCartController : ControllerBase
     // PATCH /api/cart/{id}
     // Updates the quantity for a shopping cart item
     [HttpPatch("{id}")]
-    public async Task<ActionResult<ShoppingCartItemDto>> UpdateCartItemQuantity(int id, float quantity)
+    public async Task<ActionResult> UpdateCartItemQuantity(int id, float quantity)
     {
-        var mal = ""; // get email from somewhere else plz
+        var email = User.GetUserEmail();
+        if (email is null) return Unauthorized();
 
         try
         {
-            await _cartService.UpdateCartItemQuantityAsync(mal, id, quantity);
-            return Ok("Item quantity updated");
+            await _cartService.UpdateCartItemQuantityAsync(email, id, quantity);
+            return Ok();
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             return BadRequest(ex.Message);
         }
@@ -83,14 +92,15 @@ public class ShoppingCartController : ControllerBase
     [HttpDelete("")]
     public async Task<IActionResult> ClearCart()
     {
-        var mal = ""; // get email from somewhere else plz
+        var email = User.GetUserEmail();
+        if (email is null) return Unauthorized();
 
         try
         {
-            await _cartService.ClearCartAsync(mal);
+            await _cartService.ClearCartAsync(email);
             return NoContent();
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             return BadRequest(ex.Message);
         }

@@ -21,7 +21,9 @@ public class TokenRepository : ITokenRepository
         {
             Blacklisted = false
         };
-        _context.JwtTokens.Add(newToken);
+        
+        await _context.JwtTokens.AddAsync(newToken);
+        await _context.SaveChangesAsync();
 
         return newToken.ToDto();
     }
@@ -43,7 +45,6 @@ public class TokenRepository : ITokenRepository
         token.Blacklisted = true;
 
         _context.JwtTokens.Update(token);
-        _context.SaveChanges();
-        return;
+        await _context.SaveChangesAsync();
     }
 }

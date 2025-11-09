@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
+using Cryptocop.Software.API.Extensions;
 using Cryptocop.Software.API.Models.Dtos;
 using Cryptocop.Software.API.Models.InputModels;
 using Cryptocop.Software.API.Services.Interfaces;
@@ -8,40 +11,39 @@ namespace Cryptocop.Software.API.Controllers;
 
 [Route("api/payments")]
 [ApiController]
+[Authorize]
 public class PaymentController : ControllerBase
 {
-    private readonly ITokenService _tokenService;
     private readonly IPaymentService _payService;
-    public PaymentController(IPaymentService payService, ITokenService tokenService)
-    {
-        _tokenService = tokenService;
-        _payService = payService;
-    }
-
+    public PaymentController(IPaymentService payService) => _payService = payService;
+    
 
     // GET /api/payments
     // Gets all payment cards associated with the authenticated user
     [HttpGet("")]
     public async Task<ActionResult<IEnumerable<PaymentCardDto>>> GetStoredPaymentCards()
     {
-        var mal = ""; // get email from somewhere else plz
+        var email = User.GetUserEmail();
+        if (email is null) return Unauthorized();
 
-        return Ok(await _payService.GetStoredPaymentCardsAsync(mal));
+        return Ok(await _payService.GetStoredPaymentCardsAsync(email));
     }
 
     // POST /api/payments
     // Adds a new payment card associated with the authenticated user
     [HttpPost("")]
-    public async Task<ActionResult<PaymentCardDto>> AddPaymentCard(PaymentCardInputModel input)
+    public async Task<ActionResult> AddPaymentCard(PaymentCardInputModel input)
     {
-        var mal = ""; // get email from somewhere else plz
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+        var email = User.GetUserEmail();
+        if (email is null) return Unauthorized();
 
         try
         {
-            await _payService.AddPaymentCardAsync(mal, input);
-            return Ok("Payment card created");
+            await _payService.AddPaymentCardAsync(email, input);
+            return StatusCode(StatusCodes.Status201Created);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             return BadRequest(ex.Message);
         }

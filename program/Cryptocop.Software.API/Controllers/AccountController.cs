@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
+using Cryptocop.Software.API.Extensions;
 using Cryptocop.Software.API.Models.Dtos;
 using Cryptocop.Software.API.Models.InputModels;
 using Cryptocop.Software.API.Services.Interfaces;
@@ -22,16 +24,26 @@ public class AccountController : ControllerBase
     // POST /api/account/register
     // Registers a user within the application
     [HttpPost("register")]
-    public async Task<ActionResult<UserDto>> CreateUser(RegisterInputModel input)
+    [AllowAnonymous]
+    public async Task<ActionResult<AuthenticationResultDto>> CreateUser(RegisterInputModel input)
     {
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+
         try
         {
             var user = await _accountService.CreateUserAsync(input);
-            await _tokenService.GenerateJwtTokenAsync(user);
+            var token = await _tokenService.GenerateJwtTokenAsync(user);
             
-            return Ok("New user created");
+
+            var result = new AuthenticationResultDto
+            {
+                Token = token,
+                User = user
+            };
+
+            return Ok(result);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             return BadRequest(ex.Message);
         }
@@ -41,14 +53,25 @@ public class AccountController : ControllerBase
     // Signs the user in by checking the credentials 
     // provided and issuing a JWT token in return
     [HttpPost("signin")]
-    public async Task<ActionResult<UserDto>> AuthenticateUser(LoginInputModel input)
+    [AllowAnonymous]
+    public async Task<ActionResult<AuthenticationResultDto>> AuthenticateUser(LoginInputModel input)
     {
+        if (!ModelState.IsValid) return ValidationProblem(ModelState);
+
         try
         {
-            await _accountService.AuthenticateUserAsync(input);
-            return Ok("Login succssess'd");
+            // await _accountService.AuthenticateUserAsync(input);
+            var user = await _accountService.AuthenticateUserAsync(input);
+            var token = await _tokenService.GenerateJwtTokenAsync(user);
+
+            var result = new AuthenticationResultDto
+            {
+                Token = token,
+                User = user
+            };
+            return Ok(result);
         }
-        catch (Exception ex)
+        catch (ArgumentException ex)
         {
             return BadRequest(ex.Message);
         }
@@ -58,18 +81,15 @@ public class AccountController : ControllerBase
     // Logs the user out by voiding the provided 
     // JWT token using the id found within the claim
     [HttpGet("signout")]
-    public async Task<ActionResult<UserDto>> LogoutUser()
+    [Authorize]
+    public async Task<IActionResult> LogoutUser()
     {
-        var token = 1; // get token from token smth
-
-        try
+        var tokenId = User.GetTokenId();
+        if (tokenId is null)
         {
-            await _accountService.LogoutAsync(token);
-            return Ok("Logout succssess'd");
+            return Unauthorized();
         }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        await _accountService.LogoutAsync(tokenId.Value);
+        return NoContent();
     }
 }

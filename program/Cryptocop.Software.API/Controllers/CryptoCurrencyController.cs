@@ -1,5 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
+using Cryptocop.Software.API.Extensions;
 using Cryptocop.Software.API.Models.Dtos;
 using Cryptocop.Software.API.Services.Interfaces;
 
@@ -7,6 +10,7 @@ namespace Cryptocop.Software.API.Controllers;
 
 [ApiController]
 [Route("api/cryptocurrencies")]
+[Authorize]
 public class CryptoCurrencyController : ControllerBase
 {
     private readonly ICryptoCurrencyService _cryptoService;
