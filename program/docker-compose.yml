@@ -20,17 +20,72 @@ services:
       timeout: 5s
       retries: 5
 
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"    # AMQP
+      - "15672:15672"  # Management UI
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - cryptocop-network
+
   api:
     build: ./Cryptocop.Software.API
-    container_name: api
+    container_name: cryptocop_api
     depends_on:
       db:
         condition: service_healthy
+      rabbitmq:
+        condition: service_started
     environment:
       - ConnectionStrings__DefaultConnection=Host=db;Database=cryptocop_db;Username=postgres;Password=postgres
       - ASPNETCORE_URLS=http://+:5001
+      - RabbitMq__HostName=rabbitmq
+      - RabbitMq__UserName=guest
+      - RabbitMq__Password=guest
+      - RabbitMq__ExchangeName=orders-exchange
+      - RabbitMq__RoutingKey=create-order
     ports:
       - "5001:5001"
+    networks:
+      - cryptocop-network
+
+  emails-worker:
+    build: ./Cryptocop.Software.Worker.Emails
+    container_name: cryptocop_emails
+    depends_on:
+      rabbitmq:
+        condition: service_started
+    environment:
+      - RabbitMq__HostName=rabbitmq
+      - RabbitMq__UserName=guest
+      - RabbitMq__Password=guest
+      - RabbitMq__ExchangeName=orders-exchange
+      - RabbitMq__RoutingKey=create-order
+      - RabbitMq__QueueName=email-queue
+      - SendGrid__ApiKey=9jaA1KR1RLCMmrxMbEqm2Q
+      - SendGrid__FromEmail=gybyro@gmail.com
+      - SendGrid__FromName=CryptoCopAPI
+    networks:
+      - cryptocop-network
+
+  payments-worker:
+    build: ./Cryptocop.Software.Worker.Payments
+    container_name: cryptocop_payments
+    depends_on:
+      rabbitmq:
+        condition: service_started
+    environment:
+      - RabbitMq__HostName=rabbitmq
+      - RabbitMq__UserName=guest
+      - RabbitMq__Password=guest
+      - RabbitMq__ExchangeName=orders-exchange
+      - RabbitMq__RoutingKey=create-order
+      - RabbitMq__QueueName=payment-queue
     networks:
       - cryptocop-network
 

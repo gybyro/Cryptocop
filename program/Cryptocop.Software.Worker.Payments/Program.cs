@@ -1,3 +1,4 @@
+
 using Cryptocop.Software.Worker.Payments;
 
 var builder = Host.CreateApplicationBuilder(args);

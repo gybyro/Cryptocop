@@ -14,6 +14,6 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 # Expose the port ASP.NET Core listens on (default 8080)
-EXPOSE 8080
+EXPOSE 5001
 
-ENTRYPOINT ["dotnet", "ProductCatalog.dll"]
+ENTRYPOINT ["dotnet", "Cryptocop.Software.API.dll"]

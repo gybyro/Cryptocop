@@ -1,3 +1,4 @@
+
 using Cryptocop.Software.Worker.Emails;
 
 var builder = Host.CreateApplicationBuilder(args);
