@@ -1,9 +1,11 @@
-﻿using System.Text.Json;
+﻿using System.Threading.Tasks;
+using System.Linq;
 using Cryptocop.Software.API.Models.Dtos;
 using Cryptocop.Software.API.Models.InputModels;
+using Cryptocop.Software.API.Repositories.Interfaces;
 using Cryptocop.Software.API.Services.Interfaces;
 using Cryptocop.Software.API.Services.Helpers;
-using Cryptocop.Software.API.Repositories.Interfaces;
+
 
 
 namespace Cryptocop.Software.API.Services.Implementations;
@@ -26,20 +28,25 @@ public class ShoppingCartService : IShoppingCartService
     }
 
     // Add Cart Item
-    public Task AddCartItemAsync(string email, ShoppingCartItemInputModel shoppingCartItemItem)
+    public async Task AddCartItemAsync(string email, ShoppingCartItemInputModel shoppingCartItemItem)
     {
-        // TODO:
-        // Call the external API using the product identifier as an URL parameter to receive the
-        // current price in USD for this particular cryptocurrency.
-        var TEMP;
+
+        // Get all available cryptos (BTC, ETH, USDT, LINK)
+        var availableCryptos = await _cryptoService.GetAvailableCryptocurrenciesAsync();
+
+        // Find the requested crypto by symbol
+        var crypto = availableCryptos
+                .FirstOrDefault(c => c.Symbol.Equals(shoppingCartItemItem.ProductIdentifier, StringComparison.OrdinalIgnoreCase));
+        if (crypto == null) throw new Exception($"Cryptocurrency '{shoppingCartItemItem.ProductIdentifier}' not found.");
+
         
         // Deserialize the response to a CryptoCurrencyDto model
-        var response = HttpResponseMessageExtensions.DeserializeJsonToObject<CryptoCurrencyDto>(TEMP);
+        // var response = HttpResponseMessageExtensions.DeserializeJsonToObject<CryptoCurrencyDto>(TEMP);
 
         // Add it to the database using the appropriate repository class
-        _cartRepo.AddCartItemAsync(email, shoppingCartItemItem, response.PriceInUsd);
+        // _cartRepo.AddCartItemAsync(email, shoppingCartItemItem, response.PriceInUsd);
 
-        return;
+        await _cartRepo.AddCartItemAsync(email, shoppingCartItemItem, crypto.PriceInUsd);
     }
 
     // Delete Item

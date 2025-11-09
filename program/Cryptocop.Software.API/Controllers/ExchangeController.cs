@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 
-
+using Cryptocop.Software.API.Extensions;
+using Cryptocop.Software.API.Models;
 using Cryptocop.Software.API.Models.Dtos;
 using Cryptocop.Software.API.Services.Interfaces;
 
@@ -10,29 +11,24 @@ namespace Cryptocop.Software.API.Controllers;
 
 [Route("api/exchanges")]
 [ApiController]
-[Authorize]
+// [Authorize]
 public class ExchangeController : ControllerBase
 {
     private readonly IExchangeService _exchangeService;
     public ExchangeController(IExchangeService exchangeService) => _exchangeService = exchangeService;
 
 
-    // GET /api/exchanges
+    // GET /api/exchange?pageNumber=1
 
     // Gets all exchanges in a paginated envelope. 
     // This routes accepts a single query parameter called 
     // pageNumber which is used to paginate the results
 
     [HttpGet("")]
-    public async Task<ActionResult<IEnumerable<ExchangeDto>>> GetExchanges(int pagenum)
+    // public async Task<ActionResult<IEnumerable<ExchangeDto>>> GetExchanges(int pagenum)
+    public async Task<ActionResult<Envelope<ExchangeDto>>> GetExchanges([FromQuery] int pageNumber = 1)
     {
-        // string idString = HttpContext.Request.Query["id"];
-        // int pagenum = int.Parse(idString);
-        if (pagenum == 0) return Ok(await _exchangeService.GetExchangesAsync());
-        else
-
-
-
-        return Ok(await _exchangeService.GetExchangesAsync(pagenum));
+        var result = await _exchangeService.GetExchangesAsync(pageNumber);
+        return Ok(result);
     }
 }
