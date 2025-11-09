@@ -55,7 +55,9 @@ services:
       - cryptocop-network
 
   emails-worker:
-    build: ./Cryptocop.Software.Worker.Emails
+    build: 
+      context: .
+      dockerfile: ./Cryptocop.Software.Worker.Emails/Dockerfile
     container_name: cryptocop_emails
     depends_on:
       rabbitmq:
@@ -74,7 +76,9 @@ services:
       - cryptocop-network
 
   payments-worker:
-    build: ./Cryptocop.Software.Worker.Payments
+    build: 
+      context: .
+      dockerfile: ./Cryptocop.Software.Worker.Payments/Dockerfile
     container_name: cryptocop_payments
     depends_on:
       rabbitmq:
