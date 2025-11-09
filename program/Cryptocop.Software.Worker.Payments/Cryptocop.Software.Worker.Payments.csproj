@@ -8,8 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="CreditCardValidator" Version="3.0.1" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.4" />
     <PackageReference Include="RabbitMQ.Client" Version="7.2.0" />
-    <PackageReference Include="SendGrid" Version="9.29.3" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../Cryptocop.Software.API.Models/Cryptocop.Software.API.Models.csproj" />
+  </ItemGroup>
+
 </Project>
