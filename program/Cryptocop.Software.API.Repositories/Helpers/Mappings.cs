@@ -64,16 +64,26 @@ public static class Mappings
             Year = card.Year
         };
     }
-        
 
-    // public static ShoppingCartItemDto ToDto(this ShoppingCartItem item) =>
-    //     new ShoppingCartItemDto
-    //     {
-    //         Id = item.Id,
-    //         ProductIdentifier = item.ProductIdentifier,
-    //         Quantity = item.Quantity,
-    //         UnitPrice = item.UnitPrice,
-    //         TotalPrice = item.TotalPrice
-    //     };
+    public static UserDto ToDto(this User user, int tokenId) =>
+        new UserDto
+        {
+            Id = user.Id,
+            FullName = user.FullName,
+            Email = user.Email,
+            TokenId = tokenId,
+        };
+
+
+    public static ShoppingCartItemDto ToDto(this ShoppingCartItem item) =>
+        new ShoppingCartItemDto
+        {
+            Id = item.Id,
+            ProductIdentifier = item.ProductIdentifier,
+            Quantity = item.Quantity,
+            UnitPrice = item.UnitPrice,
+            TotalPrice = item.Quantity * item.UnitPrice
+        };
+        
 }
 

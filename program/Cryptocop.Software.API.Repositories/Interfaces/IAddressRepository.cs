@@ -7,6 +7,5 @@ public interface IAddressRepository
 {
     Task AddAddressAsync(string email, AddressInputModel address);
     Task<IEnumerable<AddressDto>> GetAllAddressesAsync(string email);
-    // Task<AddressDto> GetAddressAsync(string email, int id); // helper func
     Task DeleteAddressAsync(string email, int addressId);
 }

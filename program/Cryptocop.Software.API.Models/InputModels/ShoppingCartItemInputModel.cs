@@ -8,5 +8,5 @@ public class ShoppingCartItemInputModel
 
     [Required(ErrorMessage = "Quantity is required")]
     [Range(0.01f, float.MaxValue, ErrorMessage = "Quantity must be 0.01 and above")]
-    public float? Quantity { get; set; }
+    public required float Quantity { get; set; }
 }

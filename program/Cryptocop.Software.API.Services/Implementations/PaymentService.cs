@@ -14,11 +14,11 @@ public class PaymentService : IPaymentService
 
     public Task AddPaymentCardAsync(string email, PaymentCardInputModel paymentCard)
     {
-        throw new NotImplementedException();
+        return _repo.AddPaymentCardAsync(email, paymentCard);
     }
 
     public Task<IEnumerable<PaymentCardDto>> GetStoredPaymentCardsAsync(string email)
     {
-        throw new NotImplementedException();
+        return _repo.GetStoredPaymentCardsAsync(email);
     }
 }

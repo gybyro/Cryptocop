@@ -7,5 +7,4 @@ public interface IPaymentRepository
 {
     Task AddPaymentCardAsync(string email, PaymentCardInputModel paymentCard);
     Task<IEnumerable<PaymentCardDto>> GetStoredPaymentCardsAsync(string email);
-    // Task<PaymentCardDto> GetPaymentCardAsync(string email, int id); // helper func, by me :P
 }

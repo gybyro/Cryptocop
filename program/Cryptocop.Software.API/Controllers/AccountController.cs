@@ -11,7 +11,12 @@ namespace Cryptocop.Software.API.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly IAccountService _accountService;
-    public AccountController(IAccountService accountService) => _accountService = accountService;
+    private readonly ITokenService _tokenService;
+    public AccountController(IAccountService accountService, ITokenService tokenService)
+    {
+        _accountService = accountService;
+        _tokenService = tokenService;
+    }
 
 
     // POST /api/account/register
@@ -21,7 +26,9 @@ public class AccountController : ControllerBase
     {
         try
         {
-            await _accountService.CreateUserAsync(input);
+            var user = await _accountService.CreateUserAsync(input);
+            await _tokenService.GenerateJwtTokenAsync(user);
+            
             return Ok("New user created");
         }
         catch (Exception ex)

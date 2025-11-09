@@ -11,9 +11,10 @@ public class AddressService : IAddressService
     public AddressService(IAddressRepository repo) => _repo = repo;
 
 
+    // Create
     public Task AddAddressAsync(string email, AddressInputModel address)
     {
-        throw new NotImplementedException();
+        return _repo.AddAddressAsync(email, address);
     }
 
     // Get All
@@ -22,8 +23,9 @@ public class AddressService : IAddressService
         return _repo.GetAllAddressesAsync(email);
     }
 
+    // Delete
     public Task DeleteAddressAsync(string email, int addressId)
     {
-        throw new NotImplementedException();
+        return _repo.DeleteAddressAsync(email, addressId);
     }
 }

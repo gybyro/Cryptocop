@@ -15,6 +15,7 @@ public class PaymentRepository : IPaymentRepository
     public PaymentRepository(CryptocopDbContext context) => _context = context;
 
 
+    // Create
     public async Task AddPaymentCardAsync(string email, PaymentCardInputModel paymentCard)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
@@ -29,11 +30,14 @@ public class PaymentRepository : IPaymentRepository
             Year = paymentCard.Year
         };
 
+        user.PaymentCards.Add(card);
         _context.PaymentCards.Add(card);
+
         _context.SaveChanges();
         return;
     }
 
+    // Get all
     public async Task<IEnumerable<PaymentCardDto>> GetStoredPaymentCardsAsync(string email)
     {
         var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
@@ -44,17 +48,4 @@ public class PaymentRepository : IPaymentRepository
 
         return ret;
     }
-    
-
-    // helper func, by me :P
-    // public async Task<PaymentCardDto> GetPaymentCardAsync(string email, int id)
-    // {
-    //     var cards = await GetStoredPaymentCardsAsync(email);
-    //     if (cards == null) throw new ArgumentException("User has not saved any cards");
-
-    //     var card = cards.FirstOrDefault(a => a.Id == id);
-    //     if (card == null) throw new ArgumentException($"No card found with ID {id}");
-
-    //     return card;
-    // }
 }

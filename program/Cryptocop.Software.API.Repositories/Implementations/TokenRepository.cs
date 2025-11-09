@@ -1,6 +1,9 @@
-﻿using Cryptocop.Software.API.Models.Dtos;
+﻿using Microsoft.EntityFrameworkCore;
+using Cryptocop.Software.API.Models.Dtos;
+using Cryptocop.Software.API.Models.Entities;
 using Cryptocop.Software.API.Repositories.Interfaces;
 using Cryptocop.Software.API.Repositories.Data;
+using Cryptocop.Software.API.Repositories.Helpers;
 
 
 namespace Cryptocop.Software.API.Repositories.Implementations;
@@ -11,18 +14,36 @@ public class TokenRepository : ITokenRepository
     public TokenRepository(CryptocopDbContext context) => _context = context;
 
 
-    public Task<JwtTokenDto> CreateNewTokenAsync()
+    // Create
+    public async Task<JwtTokenDto> CreateNewTokenAsync()
     {
-        throw new NotImplementedException();
+        var newToken = new JwtToken
+        {
+            Blacklisted = false
+        };
+        _context.JwtTokens.Add(newToken);
+
+        return newToken.ToDto();
     }
 
-    public Task<bool> IsTokenBlacklistedAsync(int tokenId)
+    // is it???
+    public async Task<bool> IsTokenBlacklistedAsync(int tokenId)
     {
-        throw new NotImplementedException();
+        var token = await _context.JwtTokens.FirstOrDefaultAsync(t => t.Id == tokenId);
+        if (token == null) throw new ArgumentException($"Token with ID: {tokenId} not found");
+
+        return token.Blacklisted;
     }
 
-    public Task VoidTokenAsync(int tokenId)
+    public async Task VoidTokenAsync(int tokenId)
     {
-        throw new NotImplementedException();
+        var token = await _context.JwtTokens.FirstOrDefaultAsync(t => t.Id == tokenId);
+        if (token == null) throw new ArgumentException($"Token with ID: {tokenId} not found");
+
+        token.Blacklisted = true;
+
+        _context.JwtTokens.Update(token);
+        _context.SaveChanges();
+        return;
     }
 }

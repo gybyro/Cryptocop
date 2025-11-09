@@ -1,12 +1,17 @@
-﻿using Cryptocop.Software.API.Services.Interfaces;
+﻿using System.Text.Json;
+
+using Cryptocop.Software.API.Services.Interfaces;
 
 namespace Cryptocop.Software.API.Services.Implementations;
 
 public class QueueService : IQueueService, IDisposable
 {
-    public Task PublishMessageAsync(string routingKey, object body)
+    public async Task PublishMessageAsync(string routingKey, object body)
     {
-        throw new NotImplementedException();
+        string jsn = JsonSerializer.Serialize(body);
+
+        // TODO:
+        // Publish the message using a channel created with the RabbitMQ client
     }
 
     public void Dispose()

@@ -8,7 +8,12 @@ namespace Cryptocop.Software.API.Services.Implementations;
 public class OrderService : IOrderService
 {
     private readonly IOrderRepository _repo;
-    public OrderService(IOrderRepository repo) { _repo = repo; }
+    private readonly IShoppingCartRepository _cartRepo;
+    public OrderService(IOrderRepository repo, IShoppingCartRepository cartRepo)
+    {
+        _repo = repo;
+        _cartRepo = cartRepo;
+    }
 
 
     public Task<IEnumerable<OrderDto>> GetOrdersAsync(string email)
@@ -18,6 +23,12 @@ public class OrderService : IOrderService
 
     public Task CreateNewOrderAsync(string email, OrderInputModel order)
     {
-        return _repo.CreateNewOrderAsync(email, order);
+        var thatNewOrder = _repo.CreateNewOrderAsync(email, order);
+        _cartRepo.DeleteCartAsync(email);
+
+        // TODO:
+        // Publish a message to RabbitMQ with the routing key ‘create-order’ and include the newly created order
+
+        return thatNewOrder;
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Cryptocop.Software.API.Models;
 using Cryptocop.Software.API.Models.Dtos;
 using Cryptocop.Software.API.Models.Entities;
 using Cryptocop.Software.API.Models.InputModels;
@@ -71,6 +70,7 @@ public class OrderRepository : IOrderRepository
             OrderItems = orderItems
         };
 
+        user.Orders.Add(newOrder);
         _context.Orders.Add(newOrder);
         // add all the orderItems into _context where the FK is the newOrder ID
 

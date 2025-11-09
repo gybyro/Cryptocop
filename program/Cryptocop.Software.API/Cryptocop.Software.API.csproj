@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="JWT" Version="11.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.10" />
@@ -17,12 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference
-      Include="..\Cryptocop.Software.API.Models\Cryptocop.Software.API.Models.csproj" />
-    <ProjectReference
-      Include="..\Cryptocop.Software.API.Repositories\Cryptocop.Software.API.Repositories.csproj" />
-    <ProjectReference
-      Include="..\Cryptocop.Software.API.Services\Cryptocop.Software.API.Services.csproj" />
+    <ProjectReference Include="..\Cryptocop.Software.API.Models\Cryptocop.Software.API.Models.csproj" />
+    <ProjectReference Include="..\Cryptocop.Software.API.Repositories\Cryptocop.Software.API.Repositories.csproj" />
+    <ProjectReference Include="..\Cryptocop.Software.API.Services\Cryptocop.Software.API.Services.csproj" />
   </ItemGroup>
 
 </Project>
