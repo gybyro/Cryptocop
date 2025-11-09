@@ -7,4 +7,7 @@ public class ShoppingCart
 
     // Foreign keys
     public ICollection<ShoppingCartItem> ShoppingCartItems { get; set; } = new List<ShoppingCartItem>();  // (many-to-one)
+
+    // // navigation
+    // public User User { get; set; } = null!;
 }

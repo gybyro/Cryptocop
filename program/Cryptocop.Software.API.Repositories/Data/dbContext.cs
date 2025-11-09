@@ -36,17 +36,26 @@ public class CryptocopDbContext : DbContext
         .HasForeignKey(a => a.OrderId);
 
 
-        // User -> ShoppingCart
+        // User -> ShoppingCart (1:1)
         modelBuilder.Entity<ShoppingCart>()
-        .HasOne<User>()
-        .WithMany()
-        .HasForeignKey(a => a.UserId);
+            .HasIndex(a => a.UserId)
+            .IsUnique();
+
+        // modelBuilder.Entity<ShoppingCart>()
+        // .HasOne(s => s.User)
+        // .WithOne(u => u.ShoppingCart)
+        // .HasForeignKey<ShoppingCart>(s => s.UserId);
 
 
         // User -> Address
         modelBuilder.Entity<Address>()
         .HasOne<User>()
         .WithMany()
+        .HasForeignKey(a => a.UserId);
+
+        modelBuilder.Entity<Address>()
+        .HasOne(a => a.User)
+        .WithMany(u => u.Addresses)
         .HasForeignKey(a => a.UserId);
 
 
