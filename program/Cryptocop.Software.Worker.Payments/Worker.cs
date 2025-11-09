@@ -32,7 +32,7 @@ public class Worker : BackgroundService
         consumer.Received += HandleMessageAsync;
 
         _channel!.BasicConsume(queue: _rabbitOptions.QueueName, autoAck: false, consumer: consumer);
-        _logger.LogInformation("📧 Email Worker listening for messages on {queue}", _rabbitOptions.QueueName);
+        _logger.LogInformation("Payment Worker listening for messages on {queue}", _rabbitOptions.QueueName);
 
         try
         {

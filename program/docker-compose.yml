@@ -49,6 +49,7 @@ services:
       rabbitmq:
         condition: service_started
     environment:
+      - ASPNETCORE_ENVIRONMENT=Development
       - ConnectionStrings__DefaultConnection=Host=db;Database=cryptocop_db;Username=postgres;Password=postgres
       - ASPNETCORE_URLS=http://+:5001
       - RabbitMq__HostName=rabbitmq

@@ -41,6 +41,8 @@ builder.Services.AddScoped<IQueueService, QueueService>();
 builder.Services.AddScoped<IShoppingCartService, ShoppingCartService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
+builder.Services.AddHttpClient();
+
 /////////////////////// JWT /////////////////////// 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 

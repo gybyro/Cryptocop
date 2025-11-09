@@ -36,7 +36,7 @@ public static class Mappings
             City = order.City,
             CardholderName = order.CardholderName,
             CreditCard = order.MaskedCreditCard,
-            OrderDate = order.OrderDate.ToString("dd.mm.yyyy"),
+            OrderDate = order.OrderDate.ToString("dd.MM.yyyy"),
             TotalPrice = order.TotalPrice,
             OrderItems = order.OrderItems.Select(i => i.ToDto()).ToList()
         };

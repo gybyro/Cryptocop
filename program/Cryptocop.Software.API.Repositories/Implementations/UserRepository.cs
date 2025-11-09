@@ -24,7 +24,7 @@ public class UserRepository : IUserRepository
     public async Task<UserDto> CreateUserAsync(RegisterInputModel inputModel)
     {
         var userC = await _context.Users.FirstOrDefaultAsync(u => u.Email == inputModel.Email);
-        if (userC != null) throw new ArgumentException($"Email already in use");
+        if (userC != null) throw new ArgumentException("Email already in use");
 
         var hashPass = HashingHelper.HashPassword(inputModel.Password);
 
@@ -40,6 +40,13 @@ public class UserRepository : IUserRepository
         await _context.Users.AddAsync(newUser);
         await _context.SaveChangesAsync();
 
+        var shoppingCart = new ShoppingCart
+        {
+            UserId = newUser.Id
+        };
+        await _context.ShoppingCarts.AddAsync(shoppingCart);
+        await _context.SaveChangesAsync();
+
         var ret = newUser.ToDto(token.Id);
         return ret;
     }
@@ -48,11 +55,11 @@ public class UserRepository : IUserRepository
     public async Task<UserDto> AuthenticateUserAsync(LoginInputModel loginInputModel)
     {
         var userC = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginInputModel.Email);
-        if (userC == null) throw new ArgumentException($"Email does not exist");
+        if (userC == null) throw new ArgumentException("Email does not exist");
 
         var newHashedPass = HashingHelper.HashPassword(loginInputModel.Password);
 
-        if (userC.HashedPassword != newHashedPass) throw new ArgumentException($"Wrong Password");
+        if (userC.HashedPassword != newHashedPass) throw new ArgumentException("Wrong Password");
 
 
         var token = await _tokenRepo.CreateNewTokenAsync();

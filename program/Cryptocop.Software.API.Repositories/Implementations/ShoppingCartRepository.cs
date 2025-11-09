@@ -18,23 +18,22 @@ public class ShoppingCartRepository : IShoppingCartRepository
     // Get all
     public async Task<IEnumerable<ShoppingCartItemDto>> GetCartItemsAsync(string email)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        var user = await _context.Users
+            .Include(u => u.ShoppingCartt)
+            .ThenInclude(cart => cart.ShoppingCartItems)
+            .FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) throw new ArgumentException($"User with email: {email} not found");
 
-        // var cart = await _context.ShoppingCarts
-        // .Include(o => o.ShoppingCartItems)
-        // .Where(o => o.UserId == user.Id);
-
-        var cart = user.ShoppingCartt;
-
-        cart.ShoppingCartItems.Select(item => item.ToDto());
-        return (IEnumerable<ShoppingCartItemDto>)cart.ShoppingCartItems;
+        return user.ShoppingCartt.ShoppingCartItems.Select(item => item.ToDto()).ToList();
     }
 
     // Create Item
     public async Task AddCartItemAsync(string email, ShoppingCartItemInputModel shoppingCartItemItem, float priceInUsd)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        var user = await _context.Users
+            .Include(u => u.ShoppingCartt)
+            .ThenInclude(cart => cart.ShoppingCartItems)
+            .FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) throw new ArgumentException($"User with email: {email} not found");
 
         var newItem = new ShoppingCartItem
@@ -42,79 +41,73 @@ public class ShoppingCartRepository : IShoppingCartRepository
             ShoppingCartId = user.ShoppingCartt.Id,
             ProductIdentifier = shoppingCartItemItem.ProductIdentifier,
             Quantity = shoppingCartItemItem.Quantity,
-            UnitPrice = priceInUsd,
+            UnitPrice = priceInUsd
         };
 
         user.ShoppingCartt.ShoppingCartItems.Add(newItem);
-        _context.ShoppingCartItems.Add(newItem);
-
-        _context.SaveChanges();
-        return;
+        await _context.ShoppingCartItems.AddAsync(newItem);
+        await _context.SaveChangesAsync();
     }
 
     // Delete Item
     public async Task RemoveCartItemAsync(string email, int id)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        var user = await _context.Users
+            .Include(u => u.ShoppingCartt)
+            .ThenInclude(cart => cart.ShoppingCartItems)
+            .FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) throw new ArgumentException($"User with email: {email} not found");
 
-        var item = _context.ShoppingCartItems.FirstOrDefault(item => item.Id == id);
-        if (item == null) throw new ArgumentException($"No shopingcart item found with ID {id}");
+        var item = user.ShoppingCartt.ShoppingCartItems.FirstOrDefault(item => item.Id == id);
+        if (item == null) throw new ArgumentException($"No shopping cart item found with ID {id}");
 
-        user.ShoppingCartt.ShoppingCartItems.Remove(item);
         _context.ShoppingCartItems.Remove(item);
-
-        _context.SaveChanges();
-        return;
+        await _context.SaveChangesAsync();
     }
 
     // Update
     public async Task UpdateCartItemQuantityAsync(string email, int id, float quantity)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        var user = await _context.Users
+            .Include(u => u.ShoppingCartt)
+            .ThenInclude(cart => cart.ShoppingCartItems)
+            .FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) throw new ArgumentException($"User with email: {email} not found");
 
-        var item = _context.ShoppingCartItems.FirstOrDefault(item => item.Id == id);
-        if (item == null) throw new ArgumentException($"No shopingcart item found with ID {id}");
+        var item = user.ShoppingCartt.ShoppingCartItems.FirstOrDefault(item => item.Id == id);
+        if (item == null) throw new ArgumentException($"No shopping cart item found with ID {id}");
 
         item.Quantity = quantity;
 
-        // user.ShoppingCartt.ShoppingCartItems.U(item);
         _context.ShoppingCartItems.Update(item);
-
-        _context.SaveChanges();
-        return;
+        await _context.SaveChangesAsync();
     }
 
     // Delete - for Shopping Cart Service
     public async Task ClearCartAsync(string email)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        var user = await _context.Users
+            .Include(u => u.ShoppingCartt)
+            .ThenInclude(cart => cart.ShoppingCartItems)
+            .FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) throw new ArgumentException($"User with email: {email} not found");
 
-        foreach (ShoppingCartItem item in user.ShoppingCartt.ShoppingCartItems)
-        {
-            _context.ShoppingCartItems.Remove(item);
-        }
-        user.ShoppingCartt.ShoppingCartItems = new List<ShoppingCartItem>();
-        
-        _context.SaveChanges();
-        return;
+        _context.ShoppingCartItems.RemoveRange(user.ShoppingCartt.ShoppingCartItems);
+        user.ShoppingCartt.ShoppingCartItems.Clear();
+        await _context.SaveChangesAsync();
     }
 
     // Delete - for Order Service
     public async Task DeleteCartAsync(string email)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+        var user = await _context.Users
+            .Include(u => u.ShoppingCartt)
+            .ThenInclude(cart => cart.ShoppingCartItems)
+            .FirstOrDefaultAsync(u => u.Email == email);
         if (user == null) throw new ArgumentException($"User with email: {email} not found");
 
-        foreach (ShoppingCartItem item in user.ShoppingCartt.ShoppingCartItems)
-        {
-            _context.ShoppingCartItems.Remove(item);
-        }
-        user.ShoppingCartt.ShoppingCartItems = new List<ShoppingCartItem>();
-        
-        _context.SaveChanges();
-        return;
+        _context.ShoppingCartItems.RemoveRange(user.ShoppingCartt.ShoppingCartItems);
+        user.ShoppingCartt.ShoppingCartItems.Clear();
+        await _context.SaveChangesAsync();
     }
 }
